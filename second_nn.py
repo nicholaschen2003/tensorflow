@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
-fout = open('dumb_features.txt', 'w')
+fout = open('3layers.txt', 'w')
 now = time.strftime("%H:%M:%S", time.localtime())
 print("[TIMER] Process Time:", now)
 print("[TIMER] Process Time:", now, file = fout, flush = True)
@@ -52,22 +52,24 @@ class Net():
         # For Conv2D, you give it: Outgoing Layers, Frame size.  Everything else needs a keyword.
         # Popular keyword choices: strides (default is strides=1), padding (="valid" means 0, ="same" means whatever gives same output width/height as input).  Not sure yet what to do if you want some other padding.
         # Activation function is built right into the Conv2D function as a keyword argument.
-        self.model.add(layers.Conv2D(60, 3, input_shape = input_shape, activation = 'relu'))
+        self.model.add(layers.Conv2D(15, 3, input_shape = input_shape, activation = 'relu'))
         # In our example, output from first Conv2D is 28 x 28 x 6.
         # For MaxPooling2D, default strides is equal to pool_size.  Batch and layers are assumed to match whatever comes in.
         self.model.add(layers.MaxPooling2D(pool_size = 2))
         # In our example, we are now at 14 x 14 x 6.
-        self.model.add(layers.Conv2D(920, 3, activation = 'relu'))
+        self.model.add(layers.Conv2D(75, 3, activation = 'relu'))
         # In our example, we are now at 10 x 10 x 16.
         self.model.add(layers.MaxPooling2D(pool_size = 3, padding="same"))
+        self.model.add(layers.Conv2D(375, 3, activation = 'relu'))
+        self.model.add(layers.MaxPooling2D(pool_size = 3))
         # In our example, we are now at 5 x 5 x 16.
         self.model.add(layers.Flatten())
         # Now, we flatten to one dimension, so we go to just length 400.
-        self.model.add(layers.Dense(10000, activation = 'relu'))
-        self.model.add(layers.Dense(4800, activation = 'relu'))
-        self.model.add(layers.Dense(2400, activation = 'relu'))
-        self.model.add(layers.Dense(800, activation = 'relu'))
-        self.model.add(layers.Dense(400, activation = 'relu'))
+        # self.model.add(layers.Dense(10000, activation = 'relu'))
+        # self.model.add(layers.Dense(4800, activation = 'relu'))
+        # self.model.add(layers.Dense(2400, activation = 'relu'))
+        # self.model.add(layers.Dense(800, activation = 'relu'))
+        # self.model.add(layers.Dense(400, activation = 'relu'))
         self.model.add(layers.Dense(120, activation = 'relu'))
         # Now we're at length 120.
         self.model.add(layers.Dense(84, activation = 'relu'))
