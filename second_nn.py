@@ -65,8 +65,6 @@ class Net():
         # In our example, we are now at 5 x 5 x 16.
         self.model.add(layers.Flatten())
         # Now, we flatten to one dimension, so we go to just length 400.
-        # self.model.add(layers.Dense(10000, activation = 'relu'))
-        # self.model.add(layers.Dense(4800, activation = 'relu'))
         # self.model.add(layers.Dense(2400, activation = 'relu'))
         # self.model.add(layers.Dense(800, activation = 'relu'))
         # self.model.add(layers.Dense(400, activation = 'relu'))
