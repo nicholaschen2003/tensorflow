@@ -21,7 +21,7 @@ def generator(batch_size, data_set_list):
     while True:
         batchX, batchY = [], []
         for i in range(batch_size):
-            if index >= len(data_set_list):
+            if index >= len(data_set_list[0]):
                 index = 0
             batchX.append(data_set_list[0][index])
             batchY.append(data_set_list[1][index])
