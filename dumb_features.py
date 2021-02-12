@@ -16,6 +16,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
+def generator(batch_size, data_set_list):
+    index = 0
+    while True:
+        batchX, batchY = [], []
+        for i in range(batch_size):
+            if index >= len(data_set_list[0]):
+                index = 0
+            batchX.append(data_set_list[0][index])
+            batchY.append(data_set_list[1][index])
+            index += 1
+        yield np.array(batchX), np.array(batchY)
+
 fout = open('3layers.txt', 'w')
 now = time.strftime("%H:%M:%S", time.localtime())
 print("[TIMER] Process Time:", now)
@@ -106,7 +118,7 @@ net = Net((32, 32, 3))
 # Notice that this will print both to console and to file.
 print(net)
 
-results = net.model.fit(trainX, trainY, validation_data=(testX, testY), shuffle = True, epochs = TRAIN_EPOCHS, batch_size = BATCH_SIZE_TRAIN, validation_batch_size = BATCH_SIZE_TEST, verbose = 1)
+results = net.model.fit(x=generator(BATCH_SIZE_TRAIN, [trainX,trainY]), validation_data=generator(BATCH_SIZE_TEST, [testX, testY]), shuffle = True, epochs = TRAIN_EPOCHS, batch_size = BATCH_SIZE_TRAIN, validation_batch_size = BATCH_SIZE_TEST, verbose = 1, steps_per_epoch=len(trainX)/BATCH_SIZE_TRAIN, validation_steps=len(testX)/BATCH_SIZE_TEST)
 
 plt.figure()
 plt.plot(np.arange(0, 50), results.history['loss'])

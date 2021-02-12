@@ -1,1 +1,3 @@
 [TIMER] Process Time: 09:05:09
+[INFO] GPU is detected.
+[INFO] Done importing packages.
