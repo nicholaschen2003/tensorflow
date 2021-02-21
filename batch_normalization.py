@@ -17,6 +17,31 @@ import numpy as np
 import cv2
 import sys
 from contextlib import redirect_stdout
+import shutil
+
+class Logger(object):
+    def __init__(self):
+        self.terminal = sys.stdout
+        self.log = open("batch_normalization.txt", "a")
+        self.last = ""
+        self.counter = 0
+
+    def write(self, message):
+        # saves thing to file
+        if "val_loss" in message:
+            self.log.write(self.last+message)
+        # tensorflow logs things in "\n", prgress bar, stats so this ignores the \n and combines the other two, adds \r to remove and works somehow :)
+        if self.counter % 3 == 1:
+            self.last = message
+        elif self.counter % 3 == 2:
+            message = self.last + message
+            self.terminal.write("\r"+message.replace("\n",""))
+        self.counter += 1
+
+    def flush(self):
+        self.terminal.flush()
+
+sys.stdout = Logger()
 
 def generator(batch_size, data_set_list):
     index = 0
@@ -38,7 +63,7 @@ fout = open('batch_normalization.txt', 'w')
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
 # Set to zero to use above saved model
-TRAIN_EPOCHS = 2
+TRAIN_EPOCHS = 1
 # If you want to save the model at every epoch in a subfolder set to 'True'
 SAVE_EPOCHS = False
 # If you just want to save the final output in current folder, set to 'True'
