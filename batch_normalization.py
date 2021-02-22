@@ -19,35 +19,41 @@ import sys
 from contextlib import redirect_stdout
 import shutil
 
-class Logger(object):
-    def __init__(self):
-        self.terminal = sys.stdout
-        self.log = open("batch_normalization.txt", "a")
-        self.last = ""
-        self.counter = -100
+#saving after every epoch (overrides)
+callback = tf.keras.callbacks.ModelCheckpoint(filepath="batch_normalization-checkpoints/",
+                                                verbose=1,
+                                                save_best_only=True,
+                                                save_freq='epoch')
 
-    def write(self, message):
-        # saves thing to file
-        if "val_loss" in message:
-            self.log.write(self.last+message)
-        if "Epoch" in message:
-            self.terminal.write("\n"+message+"\n")
-            self.log.write(message+"\n")
-            if "Epoch 1/" in message:
-                self.counter = -5 #5 more messages after first epoch
-            else:
-                self.counter = -2
-        # tensorflow logs things in "\n", prgress bar, stats so this ignores the \n and combines the other two, adds \r to remove and works somehow :)
-        if self.counter >= 0:
-            if self.counter % 3 == 1:
-                self.last = message
-            elif self.counter % 3 == 2:
-                message = self.last + message
-                self.terminal.write("\r"+message.replace("\n",""))
-        self.counter += 1
-
-    def flush(self):
-        self.terminal.flush()
+# class Logger(object):
+#     def __init__(self):
+#         self.terminal = sys.stdout
+#         self.log = open("batch_normalization.txt", "a")
+#         self.last = ""
+#         self.counter = -100
+#
+#     def write(self, message):
+#         # saves thing to file
+#         if "val_loss" in message:
+#             self.log.write(self.last+message)
+#         if "Epoch" in message and "Epoch 0" not in message:
+#             self.terminal.write("\n"+message+"\n")
+#             self.log.write(message+"\n")
+#             if "Epoch 1/" in message:
+#                 self.counter = -5 #5 more messages after first epoch
+#             else:
+#                 self.counter = -2
+#         # tensorflow logs things in "\n", prgress bar, stats so this ignores the \n and combines the other two, adds \r to remove and works somehow :)
+#         if self.counter >= 0:
+#             if self.counter % 3 == 1:
+#                 self.last = message
+#             elif self.counter % 3 == 2:
+#                 message = self.last + message
+#                 self.terminal.write("\r"+message.replace("\n",""))
+#         self.counter += 1
+#
+#     def flush(self):
+#         self.terminal.flush()
 
 def generator(batch_size, data_set_list):
     index = 0
@@ -61,10 +67,19 @@ def generator(batch_size, data_set_list):
             index += 1
         yield np.array(batchX), np.array(batchY)
 
-fout = open('batch_normalization.txt', 'w')
+#fout = open('batch_normalization.txt', 'w')
 # now = time.strftime("%H:%M:%S", time.localtime())
 # print("[TIMER] Process Time:", now)
 # print("[TIMER] Process Time:", now, file = fout, flush = True)
+
+#logging
+class CustomCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        keys = list(logs.keys())
+        s = f"Epoch {epoch+1}\n"
+        for key in keys:
+            s += f"{key}: {logs[key]:.4f} - "
+        print(s[:-3], file=open('batch_normalization.txt', 'a'))
 
 # File location to save to or load from
 MODEL_SAVE_PATH = './cifar_net.pth'
@@ -97,24 +112,24 @@ class Net():
         # For Conv2D, you give it: Outgoing Layers, Frame size.  Everything else needs a keyword.
         # Popular keyword choices: strides (default is strides=1), padding (="valid" means 0, ="same" means whatever gives same output width/height as input).  Not sure yet what to do if you want some other padding.
         # Activation function is built right into the Conv2D function as a keyword argument.
-        self.model.add(layers.Conv2D(15, 3, input_shape = input_shape, activation = 'relu'))
+        self.model.add(layers.Conv2D(33, 3, input_shape = input_shape, activation = 'relu'))
         self.model.add(layers.BatchNormalization())
         # In our example, output from first Conv2D is 28 x 28 x 6.
         # For MaxPooling2D, default strides is equal to pool_size.  Batch and layers are assumed to match whatever comes in.
         self.model.add(layers.MaxPooling2D(pool_size = 2))
         # In our example, we are now at 14 x 14 x 6.
-        self.model.add(layers.Conv2D(75, 3, activation = 'relu'))
+        self.model.add(layers.Conv2D(333, 3, activation = 'relu'))
         # In our example, we are now at 10 x 10 x 16.
         self.model.add(layers.MaxPooling2D(pool_size = 3, padding="same"))
-        self.model.add(layers.Conv2D(375, 3, activation = 'relu'))
+        self.model.add(layers.Conv2D(3333, 3, activation = 'relu'))
         self.model.add(layers.MaxPooling2D(pool_size = 3))
         # In our example, we are now at 5 x 5 x 16.
         self.model.add(layers.Flatten())
         # Now, we flatten to one dimension, so we go to just length 400.
         # self.model.add(layers.Dense(4800, activation = 'relu'))
-        # self.model.add(layers.Dense(2400, activation = 'relu'))
-        # self.model.add(layers.Dense(800, activation = 'relu'))
-        # self.model.add(layers.Dense(400, activation = 'relu'))
+        self.model.add(layers.Dense(1600, activation = 'relu'))
+        self.model.add(layers.Dense(800, activation = 'relu'))
+        self.model.add(layers.Dense(400, activation = 'relu'))
         self.model.add(layers.Dense(120, activation = 'relu'))
         # Now we're at length 120.
         self.model.add(layers.Dense(84, activation = 'relu'))
@@ -131,7 +146,7 @@ class Net():
 
     def print_summary(self, summaryStr):
         print(summaryStr)
-        print(summaryStr, file=fout)
+        print(summaryStr, file=open('batch_normalization.txt', 'a'))
 
 # print("[INFO] Loading Traning and Test Datasets.")
 # print("[INFO] Loading Traning and Test Datasets.", file=fout)
@@ -149,12 +164,29 @@ testY = lb.fit_transform(testY)
 
 classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
-net = Net((32, 32, 3))
+#loading models
+load = input("Enter path to model to be loaded, or hit enter for no model: ")
+if load == "":
+    net = Net((32, 32, 3))
+else:
+    net = tf.keras.models.load_model(load)
 print(net)
-fout.close()
-sys.stdout = Logger()
+# fout.close()
+# sys.stdout = Logger()
 # Notice that this will print both to console and to file.
-results = net.model.fit(x=generator(BATCH_SIZE_TRAIN, [trainX,trainY]), validation_data=generator(BATCH_SIZE_TEST, [testX, testY]), shuffle = True, epochs = TRAIN_EPOCHS, batch_size = BATCH_SIZE_TRAIN, validation_batch_size = BATCH_SIZE_TEST, verbose = 1, steps_per_epoch=len(trainX)/BATCH_SIZE_TRAIN, validation_steps=len(testX)/BATCH_SIZE_TEST)
+results = net.model.fit(x=generator(BATCH_SIZE_TRAIN, [trainX,trainY]),
+                        validation_data=generator(BATCH_SIZE_TEST, [testX, testY]),
+                        shuffle = True,
+                        epochs = TRAIN_EPOCHS,
+                        batch_size = BATCH_SIZE_TRAIN,
+                        validation_batch_size = BATCH_SIZE_TEST,
+                        verbose = 1,
+                        steps_per_epoch=len(trainX)/BATCH_SIZE_TRAIN,
+                        validation_steps=len(testX)/BATCH_SIZE_TEST,
+                        callbacks=[callback, CustomCallback()]) #saving and logging
+
+#saving the model at end
+tf.keras.models.save_model(net, "batch_normalization-checkpoints/")
 
 plt.figure()
 plt.plot(np.arange(0, 50), results.history['loss'])
