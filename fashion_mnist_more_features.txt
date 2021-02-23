@@ -1,0 +1,64 @@
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d (Conv2D)              (None, 24, 24, 10)        260       
+_________________________________________________________________
+batch_normalization (BatchNo (None, 24, 24, 10)        40        
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 12, 12, 10)        0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 10, 10, 100)       9100      
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 5, 5, 100)         0         
+_________________________________________________________________
+flatten (Flatten)            (None, 2500)              0         
+_________________________________________________________________
+dense (Dense)                (None, 50)                125050    
+_________________________________________________________________
+dense_1 (Dense)              (None, 10)                510       
+=================================================================
+Total params: 134,960
+Trainable params: 134,940
+Non-trainable params: 20
+_________________________________________________________________
+Epoch 1
+loss: 0.0369 - accuracy: 0.7944 - val_loss: 0.0302 - val_accuracy: 0.8256
+Epoch 2
+loss: 0.0270 - accuracy: 0.8517 - val_loss: 0.0262 - val_accuracy: 0.8503
+Epoch 3
+loss: 0.0242 - accuracy: 0.8664 - val_loss: 0.0244 - val_accuracy: 0.8616
+Epoch 4
+loss: 0.0225 - accuracy: 0.8759 - val_loss: 0.0231 - val_accuracy: 0.8688
+Epoch 5
+loss: 0.0212 - accuracy: 0.8815 - val_loss: 0.0221 - val_accuracy: 0.8734
+Epoch 6
+loss: 0.0201 - accuracy: 0.8867 - val_loss: 0.0212 - val_accuracy: 0.8774
+Epoch 7
+loss: 0.0193 - accuracy: 0.8914 - val_loss: 0.0206 - val_accuracy: 0.8811
+Epoch 8
+loss: 0.0186 - accuracy: 0.8954 - val_loss: 0.0200 - val_accuracy: 0.8837
+Epoch 9
+loss: 0.0181 - accuracy: 0.8989 - val_loss: 0.0195 - val_accuracy: 0.8859
+Epoch 10
+loss: 0.0175 - accuracy: 0.9022 - val_loss: 0.0191 - val_accuracy: 0.8884
+Epoch 11
+loss: 0.0171 - accuracy: 0.9045 - val_loss: 0.0187 - val_accuracy: 0.8907
+Epoch 12
+loss: 0.0167 - accuracy: 0.9065 - val_loss: 0.0185 - val_accuracy: 0.8909
+Epoch 13
+loss: 0.0163 - accuracy: 0.9087 - val_loss: 0.0182 - val_accuracy: 0.8922
+Epoch 14
+loss: 0.0160 - accuracy: 0.9107 - val_loss: 0.0180 - val_accuracy: 0.8937
+Epoch 15
+loss: 0.0157 - accuracy: 0.9126 - val_loss: 0.0178 - val_accuracy: 0.8944
+Epoch 16
+loss: 0.0155 - accuracy: 0.9151 - val_loss: 0.0176 - val_accuracy: 0.8957
+Epoch 17
+loss: 0.0152 - accuracy: 0.9164 - val_loss: 0.0175 - val_accuracy: 0.8964
+Epoch 18
+loss: 0.0149 - accuracy: 0.9183 - val_loss: 0.0174 - val_accuracy: 0.8980
+Epoch 19
+loss: 0.0147 - accuracy: 0.9202 - val_loss: 0.0173 - val_accuracy: 0.8993
+Epoch 20
+loss: 0.0145 - accuracy: 0.9219 - val_loss: 0.0172 - val_accuracy: 0.8994

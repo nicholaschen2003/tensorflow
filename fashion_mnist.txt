@@ -1,0 +1,42 @@
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d (Conv2D)              (None, 24, 24, 4)         104
+_________________________________________________________________
+batch_normalization (BatchNo (None, 24, 24, 4)         16
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 12, 12, 4)         0
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 10, 10, 16)        592
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 5, 5, 16)          0
+_________________________________________________________________
+flatten (Flatten)            (None, 400)               0
+_________________________________________________________________
+dense (Dense)                (None, 10)                4010
+=================================================================
+Total params: 4,722
+Trainable params: 4,714
+Non-trainable params: 8
+_________________________________________________________________
+Epoch 1
+loss: 0.0503 - accuracy: 0.7186 - val_loss: 0.0434 - val_accuracy: 0.7566
+Epoch 2
+loss: 0.0391 - accuracy: 0.7891 - val_loss: 0.0383 - val_accuracy: 0.7856
+Epoch 3
+loss: 0.0360 - accuracy: 0.8087 - val_loss: 0.0356 - val_accuracy: 0.8025
+Epoch 4
+loss: 0.0343 - accuracy: 0.8199 - val_loss: 0.0343 - val_accuracy: 0.8109
+Epoch 5
+loss: 0.0331 - accuracy: 0.8268 - val_loss: 0.0333 - val_accuracy: 0.8172
+Epoch 6
+loss: 0.0322 - accuracy: 0.8324 - val_loss: 0.0326 - val_accuracy: 0.8229
+Epoch 7
+loss: 0.0316 - accuracy: 0.8362 - val_loss: 0.0321 - val_accuracy: 0.8269
+Epoch 8
+loss: 0.0310 - accuracy: 0.8391 - val_loss: 0.0317 - val_accuracy: 0.8311
+Epoch 9
+loss: 0.0306 - accuracy: 0.8414 - val_loss: 0.0313 - val_accuracy: 0.8335
+Epoch 10
+loss: 0.0303 - accuracy: 0.8439 - val_loss: 0.0310 - val_accuracy: 0.8363
